@@ -124,10 +124,10 @@ $(document).ready(function () {
 
 <div id="abstract" class="section level2">
 <h2>Abstract</h2>
-<p>With the popularity of wearable ( <a href="http://www.fhs.swiss/pdf/communique_170112_a.pdf">source</a> )technologies both data scientist and health professionals can find a crossroads in the world of biotechnology. Biotechnology as defined by bio.org is <em>“… [technology that] harnesses cellular and biomolecular process to develop technologies and products that help improve our lives and the health of our planet.”</em> With the quanitiy of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing this vast volume of data to improve the human experience.</p>
-<p>Many companies have utilized wearable apps to help understand customer’s heatlh history more intimately. <a href="https://evidation.com/">Evidation Health</a> has done studies which utilizelongitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( <a href="https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf">source</a> ).</p>
-<p>Researchers in San Franciso have created a semi-supervised model utlizing deep learning that can predict medical conditions with the help of wearable app data from commerical apps like FitBit and Apple Watch. ( <a href="https://arxiv.org/pdf/1802.02511.pdf">source</a> ).</p>
-<p>Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science and biotechnology through:</p>
+<p>With the popularity of wearable ( <a href="http://www.fhs.swiss/pdf/communique_170112_a.pdf">source</a> )technologies both data scientist and health professionals have found a crossroads that provides insight into a powerful data processors, the human body. With the quanitiy of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing this vast volume of data to improve the human experience.</p>
+<p>Many companies have utilized wearable apps to help understand customer’s heatlh history more intimately. <a href="https://evidation.com/">Evidation Health</a> has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( <a href="https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf">source</a> ). Being able to perform better than the baseline model (using low time granularity features).</p>
+<p>Researchers in San Franciso have created a semi-supervised model utlizing deep learning that can predict medical conditions with the help of wearable app data from commerical apps like FitBit and Apple Watch. ( <a href="https://arxiv.org/pdf/1802.02511.pdf">source</a> ). Utilzing Long short-term Memory (or <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">LSTM</a>) models yield better predictive power than baseline models (some include Random Forest and Multi-layer Perceptron).</p>
+<p>Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science:</p>
 <ul>
 <li>the quantity of data available.</li>
 <li>the ease of access for the mHealth wearable apps</li>
@@ -429,8 +429,6 @@ missing_values</code></pre>
          aes(week_days, avg_time_spent,
              fill = week_days)) + 
   geom_bar(stat=&quot;identity&quot;) + 
-  #geom_segment(aes(xend=week_days, yend=0)) +
-  #expand_limits(y=0) +
   facet_wrap(~months) + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45,
@@ -582,8 +580,19 @@ missing_values</code></pre>
 <h2>Conclusion</h2>
 <p>Next Steps:</p>
 <ul>
-<li>Collect more data</li>
-<li>Possible Models</li>
+<li>Collect More data</li>
+<li>Time - Apple watch data that has more than 1 year</li>
+<li>Different People - Collect data from different people</li>
+<li>Research -</li>
+<li>Health amount of calories burned daily</li>
+<li>Relationship between categories</li>
+<li>Shiny Dashboard -</li>
+<li>Optional choosing to allow insight into the different categories</li>
+<li>Machine Learning - predictive modeling</li>
+<li>Temporal modeling</li>
+<li>Creating the relationships across categories</li>
+<li>See relationships across categories</li>
+<li>SQL database</li>
 </ul>
 </div>
 
