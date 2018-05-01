@@ -1,0 +1,423 @@
+---
+title: "Apple Watch Data Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract
+
+With the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_170112_a.pdf) )technologies both data scientist and health professionals can find a crossroads in the world of biotechnology. Biotechnology as defined by bio.org is *"... [technology that] harnesses cellular and biomolecular process to develop technologies and products that help improve our lives and the health of our planet."* With the quanitiy of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing this vast volume of data to improve the human experience.   
+
+Many companies have utilized wearable apps to help understand customer's heatlh history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilizelongitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ). 
+
+Researchers in San Franciso have created a semi-supervised model utlizing deep learning that can predict medical conditions with the help of wearable app data from commerical apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  
+
+Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science and biotechnology through:
+
++ the quantity of data available.
++ the ease of access for the mHealth wearable apps
++ the relationship between the data and other data sources 
+
+Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica. (  [source](https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html) ), understanding the importance of wearable app within the context of medical advances can help the health industry. 
+
+One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonimized and I will be focusing on exploratory analysis on one factor that are measured by the app: active energy burned. Although future iterations I would like to include other measurables gathered by the watch.  
+
+## Get Data
+
+I received the data from my friend extracting the data from their Apple Watch as an xml file. I then used a python script created by Nicholas J. Radcliffe, which parses through the xml files and creates csv files. Repo can be found [here](https://github.com/tdda/applehealthdata).
+
+After running the script I anonymized the data and input it into a sub-directory called *data* inside my parent directory. 
+
+## Load Packages
+
+This walkthrough focuses on `tidyverse`, `lubridate` and `ggplot2` to provide eloquent and digestable visuals to showcase *exploratory analysis* on a single person's *apple watch* data. We will be focusing on the active energy burned by this individual for this section of the analysis. 
+
+Here we load the appropriate into our R environment. 
+
+```{r load_packages, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(lubridate)
+library(here)
+
+here::here()
+source(here::here("src", "helper_functions.R"))
+```
+
+When utilizing functions in the `here` package, we will use the currrent notation:
+
+```{r, eval=FALSE}
+  here::function_name
+```
+
+Because there are conflicts in functions that are called `here` in the `lubridate` and `here` packages, we will use the previously mentioned notation. I also created a script called `global_vars` which has 2 helper functions which create meta data relating to the day of the week and month, along with data type conversions relating to date columns. 
+
+## Load Data
+
+We will be loading the data with `tidyr`'s csv file reader, which will load the data into a `tibble`.  
+
+There were a few other columns relating to the meta-data of the apple watch, but they were removed for this analysis 
+
+```{r load_data}
+# Load Data
+anon_data <- read_csv(
+    here::here("data/processed", "data.csv")
+    )
+
+anon_data <- anon_data %>%
+  convert_date(creationDate) %>%
+  convert_date(startDate) %>%
+  convert_date(endDate)
+
+anon_data <- anon_data %>% 
+  clean_data(creationDate)
+```
+
+The `convert_date` function converts the columns relating to datetime to datetime data types with Pacific time zones. I utilize a for-loop containing a list with the name of the date columns to convert the columns to datetime. 
+
+The `clean_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, which include making a week day column and a month column that's an ordered factor column. 
+
+## More Data Cleanage
+
+Another transformation I included was finding the difference in minutes between the start date and end date of each measurement. We do this utilizing `mutate` from `dplyr`, along with `difftime` in units of minutes. 
+
+```{r}
+# Find difference in start and end date in minutes
+anon_data <- anon_data %>%
+  mutate(time_diff_mins = as.numeric(
+  difftime(endDate, startDate, units = "mins")
+  )) 
+```
+
+I wanted to include this to gain insight as to how regularly were measurements done since I am not too familiar with Apple Watches or their data collection processes. 
+
+Now let's preview the `tibble`:
+
+```{r}
+head(anon_data)
+```
+
+
+## Dive into data
+
+Here I will flatten the data across years and months. This is done utilizing the `spread` function where we use year as the key and fill any values that are not present with *None Noted* to showcase the distribution of the data.
+
+
+```{r, eval=FALSE}
+anon_data %>%
+  group_by(months, year) %>%
+  summarize(total_Cal = sum(value)) %>%
+  spread(key = year,
+         value = total_Cal,
+         fill = "None Noted")
+```
+| Month | 2016 | 2017 | 2018 | 
+|-------|------|------|------|
+| January |	None Noted | 	11516946 |	9777295 | 	
+| February |	None Noted | 	10744737 | 	10750884 | 	
+| March |	None Noted | 	10876301 | 	1072273 | 	
+| April	| None Noted | 	13952086 | None Noted | 
+| May |	None Noted |	13806328 |	None Noted | 
+| June |	None Noted |	10065583 |	None Noted | 	
+| July |	None Noted | 	5539308 | 	None Noted |	
+| August | None Noted |	9337452	| None Noted | 
+| September	| None Noted | 7876080	| None Noted | 	
+| October	| None Noted |	11931943 | None Noted | 
+| November | 10123599 | 10174572 | None Noted | 
+| December | 10030715	| 7738922	 | None Noted | 
+
+As we can see the person's data collection started in November 2016 and is ongoing until March 2018. Next we create a visual representation to drive the point home. 
+
+## Visual Representation
+
+```{r}
+anon_data %>%
+  group_by(months, year) %>%
+  summarize(total_Cal = sum(value)) %>%
+  ggplot(.,
+         aes(months,
+             y = total_Cal,
+             fill = as.factor(year))) +
+  geom_bar(stat = "identity",
+           colour = "#39a78e") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) +
+  facet_wrap( ~ year) +
+  labs(x = "Year",
+       y = "Total",
+       title = "Total Calories Burned by Month and Year") +
+  scale_fill_hue(l = 40,
+                 name = "Year")
+```
+
+I decided to only do analysis on 2017 since that's the year with the most complete data available from my friend's apple watch, and having incomplete data collection for the other years would skew our conclusions as well. 
+
+
+## Creating tibble for 2017
+
+Here we will be utlizing the `filter` function to only include data which have the year column (generated from the `creationDate` column) equal to 2017 and call it `anon_data17`. 
+
+```{r}
+anon_data17 <- anon_data %>%
+  filter(year == 2017)
+```
+
+## Missing Values 
+
+The simplest way to check to see what data is misssing is by looking through dates. I created a list which includes all dates in 2017 and created a list with all dates captured by the *creation date*. 
+
+
+```{r}
+year_ad17 <- unique(as.Date(anon_data17$creationDate))
+year17 <- seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "days")
+missing_values <- year17[!year17 %in% year_ad17]
+
+
+missing_values
+wday(missing_values, label = TRUE)
+
+```
+We can see that the missing entries include the time interval 7/24/2017 to 08/04/2017 (12 days), meaning there is a human component as to why the data is missing. Vacation maybe, lost watch perhaps... 
+
+
+### Summary Statistics
+
+Now that we have our new tibble we can go ahead and begin our analysis. I begin by looking at the distribution of the Calories burned using the `summary` function. 
+
+```{r}
+summary(anon_data17$value)
+```
+
+Next we visualize the distribution utilizing a histogram. 
+
+```{r}
+ggplot(anon_data17, 
+         aes(value)) + 
+  geom_histogram(fill = "#39a78e", 
+                 bins = 200) + 
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(0, 
+                                  max(anon_data17$value), 
+                                  by = 1)) + 
+  labs(x = "Calories Burned", 
+       y = "Total", 
+       title = "Energy Burned by Month") 
+```
+
+We can see that there are some potential outliers and that our data is centered between somewhere between 0 and 1. 
+
+
+```{r}
+anon_data17 %>%
+  mutate(week_date = ceiling(day(creationDate) / 7)) %>%
+  group_by(week_date, months, week_days) %>%
+  summarise(total_cal = sum(value)) %>%
+  ggplot(., 
+       aes(week_days, week_date, fill = total_cal)) +
+  geom_tile(colour = "white") + 
+  facet_wrap(~months) +
+  theme_bw() +
+  scale_fill_gradient(name = "Total \nCalories", 
+                      low = "#39a78e", high = "#a73952") + 
+  labs(x = "Week of the Month", 
+       y = "Weekday") + 
+  scale_y_continuous(trans = "reverse")
+```
+
+We can see that most of the energy burned falls under 1 Calorie burned per instance. Recall we created a column that captures the time (in minutes) for each recording, let's try to examine that next to see if there are any potential relationships between the amount of energy burned and the time frame of the recording.  
+
+```{r}
+ggplot(anon_data17, 
+       aes(time_diff_mins, value)) + 
+  geom_point(alpha = 0.10,
+             fill = "#39a78e") + 
+  theme_minimal() + 
+  labs(x = "Time Interval (in mins.)", 
+       y = "Calories Burned")
+
+```
+
+
+## Time Frame Analysis
+
+Again we begin by doing some summary statistics relating to the time difference. 
+
+```{r}
+summary(anon_data17$time_diff_mins)
+```
+
+We can see that the data falls mostly within the 1 minute time frame, while we have a maximum value of an hour. Let's dissect the data more by grouping both by month and weekday seperately to see if there are any trends within dates as it relates to larger values for energy burned. 
+
+#### By Month
+
+Let's start with grouping by month.  
+
+```{r}
+anon_data17 %>%
+ group_by(months) %>%
+ summarise(avg_time_spent = mean(time_diff_mins)) 
+```
+The average shows that for each month still have averages around 1 minute. Now let's try by weekday and month. This time I created a visual since the output would be too large to read easily.  
+
+```{r}
+anon_data17 %>%
+ group_by(week_days, months) %>%
+ summarise(avg_time_spent = mean(time_diff_mins)) %>%
+  ggplot(.,
+         aes(week_days, avg_time_spent,
+             fill = week_days)) + 
+  geom_bar(stat="identity") + 
+  #geom_segment(aes(xend=week_days, yend=0)) +
+  #expand_limits(y=0) +
+  facet_wrap(~months) + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) +  
+  labs(x = "Weekday", 
+       y = "Average Time Spent", 
+       title = "Average Time by months and Weekday") + 
+    scale_fill_hue(l = 40,
+                 name = "Weekday")
+```
+
+## Comparing Time Frame and Calories Burned
+
+Based on this analyis it seems like most data is predominately captured in time frames of 1 minute. So let's explore the instances where the value is greater than 5 (my own judgement). I am wondering if these instances have time frames greater than 1 minute. 
+
+```{r}
+anon_data17 %>%
+  filter(value > 4) %>%
+  select(time_diff_mins, value) %>%
+  summary()
+```
+
+Suprisingly most instances that have larger values still predominately time frames of 1 minute. This leads to more questions that may fall outside of the data set, and some prior knowledge about the users workout habits. 
+
+### Diving into the Time Difference Column
+
+Here we go a little more indepth by looking at time frames that are larger than 30 minutes, just to see the amount of calories burned for these intervals. 
+
+
+```{r}
+anon_data17 %>%
+  filter((time_diff_mins > 30) ) %>%
+  select(value, time_diff_mins) %>%
+  arrange(desc(value))
+```
+
+From this inspection there can lead us to deduce that there were issues in data collection for these instances. There could be problems with how the watch performs upon reading this [article](https://support.apple.com/en-us/HT207941#heartrate). But for now let's move on to more general exploratory analysis. 
+
+## Data Collection by Day
+
+I'll start off by seeing how many instances are recorded on average by day. 
+
+```{r}
+anon_data17 %>%
+  group_by(creation_date = as.Date(creationDate)) %>%
+  count(unit) %>%
+  ungroup() %>%
+  select(n) %>% 
+  summary()
+# anon_data17 %>%
+#   group_by(creation_date = as.Date(creationDate)) %>%
+#   count(unit) %>%
+#   filter(n > 900) %>%
+#   arrange(desc(n))
+ 
+```
+Here we can see the average and median fall around 700 instances per day. 
+
+
+## Calories dissected
+
+```{r}
+anon_data17 %>% 
+  group_by(creation_date = as.Date(creationDate), 
+           week_days) %>% 
+  summarise(burn_per_day = sum(value)) %>% 
+  ggplot(., 
+         aes(creation_date, burn_per_day, 
+             fill = week_days)) + 
+  geom_bar(stat="identity") + 
+  theme_minimal() + 
+  labs(x = "Creation Date", 
+       y = "Calories burned by day", 
+       title = "Calories by Creation Date") + 
+  scale_fill_hue(l = 40,
+                 name = "Weekday") 
+```
+
+
+
+## Title
+
+```{r}
+ggplot(anon_data17, 
+       aes(week_days, value,
+           fill = as.factor(week_days))) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ months) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) +  
+  labs(x = "Weekday", 
+       y = "Total Calories",  
+       title = "Calories Burned by Weekday and Month") + 
+    scale_fill_hue(l = 40,
+                 name = "Weekday")
+```
+
+
+## Average Energy Burned for 2017
+
+For this section we will look at the average energy burned by date in a time series structure. We will do so by grouping the data by start date then summarizing the calories burned by averaging. We utilize `geom_smooth` to showcase the trend in our visual. 
+
+```{r}
+anon_data17 %>%
+  group_by(creation_date = as.Date(creationDate)) %>%
+  summarise(total_Cal = mean(value)) %>%
+  ggplot(., 
+         aes(creation_date, total_Cal)) + 
+  geom_line(colour = "#39a78e") + 
+  geom_smooth(se = FALSE) + 
+  theme_minimal() + 
+  labs(x = "Date of Activity", 
+       y = "Average Calories", 
+       title = "Average Energy Burned Time Series") 
+```
+
+## Time Series by Weekday 
+
+```{r}
+anon_data17 %>%
+  group_by(week_days, year, months) %>%
+  summarise(total_Cal = mean(value)) %>%
+  ggplot(., 
+         aes(months, total_Cal,
+             group = week_days,
+             colour = week_days)) + 
+  geom_line(aes(colour = week_days)) + 
+  theme_minimal() + 
+  labs(x = "Month", 
+       y = "Average Calories", 
+       title = "Average Energy Burned by Weekday for 2017") + 
+  theme(axis.text.x = element_text(angle = 45,
+                                   hjust = 1)) +
+    scale_color_hue(l = 40,
+                 name = "Weekday")
+  
+```
+
+We can see a decreasing trend for everyday of the week through out the year. Along with strong monthly seasonal patterns 
+
+
+## Conclusion
+
+
+Next Steps:
+
++ Collect more data 
++ Possible Models 
