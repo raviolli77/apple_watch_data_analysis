@@ -350,7 +350,7 @@ anon_data17 %>%
 
 
 
-## Title
+## Calories by Weekday and Month
 
 ```{r}
 ggplot(anon_data17, 
