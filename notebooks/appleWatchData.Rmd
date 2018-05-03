@@ -348,7 +348,11 @@ anon_data17 %>%
 
 
 
+<<<<<<< HEAD
 ## Calories burned by weekday and month
+=======
+## Calories by Weekday and Month
+>>>>>>> d0e6c11e7c018337d4bc06306248d73295c696df
 
 ```{r}
 ggplot(anon_data17, 
