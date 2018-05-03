@@ -99,3 +99,4 @@ venv.bak/
 # xml files
 *.xml
 packrat/lib*/
+packrat/src/
