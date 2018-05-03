@@ -18,6 +18,7 @@ local({
     path
   }
 
+
   ## Ensure that we set the packrat library directory relative to the
   ## project directory. Normally, this should be the working directory,
   ## but we also use '.rs.getProjectDirectory()' if necessary (e.g. we're
