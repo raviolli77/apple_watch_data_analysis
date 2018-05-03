@@ -17,7 +17,7 @@ anon_data %<>%
   convert_date(creationDate) %>%
   convert_date(startDate) %>%
   convert_date(endDate) %>%
-  clean_data(creationDate)
+  extract_date_data(creationDate)
 
 # Create column to see the difference of time between 
 # Start date and end date

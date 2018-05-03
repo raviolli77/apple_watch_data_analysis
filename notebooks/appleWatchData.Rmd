@@ -52,7 +52,7 @@ When utilizing functions in the `here` package, we will use the currrent notatio
   here::function_name
 ```
 
-Because there are conflicts in functions that are called `here` in the `lubridate` and `here` packages, we will use the previously mentioned notation. I also created a script called `global_vars` which has 2 helper functions which create meta data relating to the day of the week and month, along with data type conversions relating to date columns. 
+Because there are conflicts in functions that are called `here` in the `lubridate` and `here` packages, we will use the previously mentioned notation. I also created a script called `helper_functions` which has 2 helper functions which create meta data relating to the day of the week and month, along with data type conversions relating to date columns. 
 
 ## Load Data
 
@@ -66,18 +66,16 @@ anon_data <- read_csv(
     here::here("data/processed", "data.csv")
     )
 
-anon_data <- anon_data %>%
+anon_data %<>%
   convert_date(creationDate) %>%
   convert_date(startDate) %>%
-  convert_date(endDate)
-
-anon_data <- anon_data %>% 
-  clean_data(creationDate)
+  convert_date(endDate) %>% 
+  extract_date_data(creationDate)
 ```
 
 The `convert_date` function converts the columns relating to datetime to datetime data types with Pacific time zones. I utilize a for-loop containing a list with the name of the date columns to convert the columns to datetime. 
 
-The `clean_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, which include making a week day column and a month column that's an ordered factor column. 
+The `extract_date_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, which include making a week day column and a month column that's an ordered factor column. 
 
 ## More Data Cleanage
 
@@ -350,7 +348,7 @@ anon_data17 %>%
 
 
 
-## Title
+## Calories burned by weekday and month
 
 ```{r}
 ggplot(anon_data17, 
