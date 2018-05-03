@@ -25,10 +25,6 @@ convert_date <- function(data_frame, col_name) {
   error = function(c) {
     message(paste0("Column '", var_name, "' not in correct format"))
     stop(c)
-  },
-  warning = function(c){
-    message(paste0("Column '", var_name, "' not in correct format"))
-    stop(c)
   })
 }
 
@@ -55,9 +51,6 @@ extract_date_data <- function(data_frame, col_name){
                                         levels = months_list)
       data_frame
       }, error = function(c){
-        message(paste0("Column '", quo_name(col_name), "' not in correct format"))
-        stop(c)
-      }, warning = function(c){
         message(paste0("Column '", quo_name(col_name), "' not in correct format"))
         stop(c)
       })

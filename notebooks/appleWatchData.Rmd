@@ -60,13 +60,13 @@ We will be loading the data with `tidyr`'s csv file reader, which will load the 
 
 There were a few other columns relating to the meta-data of the apple watch, but they were removed for this analysis 
 
-```{r load_data}
+```{r}
 # Load Data
 anon_data <- read_csv(
     here::here("data/processed", "data.csv")
     )
 
-anon_data %<>%
+anon_data <- anon_data %>%
   convert_date(creationDate) %>%
   convert_date(startDate) %>%
   convert_date(endDate) %>% 
