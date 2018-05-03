@@ -10,7 +10,8 @@ This repository serves as a supplement to the exploratory analysis done in the `
 
 For reproducibility, when starting this project open *Rstudio* and go to `File > Open Project in New Session...` as shown below
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/10_open_project.PNG" />
+<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/10_open_project.png" />
+
 
 Upon doing this, the hidden file named `.Rprofile` will run automatically. Inside this file there is a call to run a file called `init.R` which was created by the `packrat` package. This will download all the dependencies with respect to packages. 
 
@@ -18,7 +19,7 @@ Upon doing this, the hidden file named `.Rprofile` will run automatically. Insid
 
 If you receive the error below when first opening the Rproject, run the command in the screenshot ( `packrat::restore(prompt = FALSE)` ):
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/11_packrat_fix.PNG" />
+<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/11_packrat_fix.png" />
 
 After all files successfully downloaded, you should be able to run all scripts. Any questions please [reach out to me](https://www.linkedin.com/in/raul-eulogio/). 
 
