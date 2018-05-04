@@ -19,7 +19,8 @@ convert_date <- function(data_frame, col_name) {
   var_name <- quo_name(var_cols)
   tryCatch({
     data_frame <- data_frame %>%
-      mutate(!!var_name := lubridate::as_datetime(!!var_cols))
+      mutate(!!var_name := lubridate::as_datetime(!!var_cols), 
+             tz = 'America/Los_Angeles')
     data_frame
   },
   error = function(c) {
