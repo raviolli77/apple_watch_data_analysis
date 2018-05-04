@@ -16,7 +16,7 @@ With the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_1
 
 Many companies have utilized wearable apps to help understand customer's heatlh history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ). Being able to perform better than the baseline model (using low time granularity features). 
 
-Researchers in San Franciso have created a semi-supervised model utlizing deep learning that can predict medical conditions with the help of wearable app data from commerical apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilzing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielded better predictive power than baseline models (some include Random Forest and Multi-layer Perceptron). 
+Researchers in San Franciso have created a semi-supervised model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilizing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielded better predictive power than baseline models (some include Random Forest and Multi-layer Perceptron). 
 
 Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science through:
 
