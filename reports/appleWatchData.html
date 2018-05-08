@@ -129,26 +129,26 @@ $(document).ready(function () {
 </ul>
 <div id="abstract" class="section level2">
 <h2>Abstract</h2>
-<p>With the popularity of wearable ( <a href="http://www.fhs.swiss/pdf/communique_170112_a.pdf">source</a> ) technologies both data scientist and health professionals have found a crossroads that provides insight into a powerful data processor, the human body. With the quanitiy of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing this vast volume of data to improve the human experience.</p>
-<p>Many companies have utilized wearable apps to help understand customer’s heatlh history more intimately. <a href="https://evidation.com/">Evidation Health</a> has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( <a href="https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf">source</a> ). Being able to perform better than the baseline model (using low time granularity features).</p>
-<p>Researchers in San Franciso have created a semi-supervised model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( <a href="https://arxiv.org/pdf/1802.02511.pdf">source</a> ). Utilizing Long short-term Memory (or <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">LSTM</a>) models yielded better predictive power than baseline models (some include Random Forest and Multi-layer Perceptron).</p>
+<p>With the popularity of wearable ( <a href="http://www.fhs.swiss/pdf/communique_170112_a.pdf">source</a> ) technology both data scientists and health professionals have found a crossroad that provides insight into a powerful data generator, the human body. With the quantity of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing and understanding the vast amount of data to improve the human experience.</p>
+<p>Many companies have utilized wearable apps to help understand customer’s heatlh history more intimately. <a href="https://evidation.com/">Evidation Health</a> has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( <a href="https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf">source</a> ). Being able to perform better than their baseline model (using low time granularity features).</p>
+<p>Researchers in San Franciso have created a semi-supervised model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( <a href="https://arxiv.org/pdf/1802.02511.pdf">source</a> ). Utilizing Long short-term Memory (or <a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">LSTM</a>) models yielded better predictive power than baseline models (classification models not considered deep learning include Random Forest and Multi-layer Perceptron).</p>
 <p>Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science through:</p>
 <ul>
 <li>the quantity of data available.</li>
-<li>the ease of access for the mHealth wearable apps</li>
-<li>the relationship between the data and other data relevant to the user</li>
+<li>the ease of access of mHealth data</li>
+<li>the relationship between the data and other data sources relevant to the user</li>
 </ul>
-<p>Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica. ( <a href="https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html">source</a> ), understanding the importance of wearable app within the context of medical advances can help the health industry.</p>
-<p>One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend’s Apple Watch. The data was anonimized and I will be focusing on exploratory analysis on one factor that are measured by the app: active energy burned. Although future iterations I would like to include other measurables gathered by the watch.</p>
+<p>Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica ( <a href="https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html">source</a> ), that can make users weary of researchers utilizing their data. Understanding the importance of wearable app within the context of medical advances can help the health industry.</p>
+<p>One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend’s Apple Watch. The data was anonymized and I will be focusing on exploratory analysis on one factor that are measured by the app: active energy burned. Although future iterations I would like to include other categories gathered by the watch.</p>
 </div>
 <div id="get-data" class="section level2">
 <h2>Get Data</h2>
 <p>I received the data from my friend extracting the data from their Apple Watch as an xml file. I then used a python script created by Nicholas J. Radcliffe, which parses through the xml files and creates csv files. Repo can be found <a href="https://github.com/tdda/applehealthdata">here</a>.</p>
-<p>After running the script I anonymized the data and input it into two sub-directories called <em>data/processed</em> inside my parent directory.</p>
+<p>After running the script I anonymized the data and input it into the sub-directory called <em>data/processed</em> inside the parent directory.</p>
 </div>
 <div id="load-packages" class="section level2">
 <h2>Load Packages</h2>
-<p>This walkthrough focuses on <code>tidyverse</code>, <code>lubridate</code> and <code>ggplot2</code> to provide eloquent and digestable visuals to showcase <em>exploratory analysis</em> on a single person’s <em>apple watch</em> data. We will be focusing on the active energy burned by this individual for this section of the analysis.</p>
+<p>This walkthrough focuses on <code>tidyverse</code>, <code>lubridate</code> and <code>ggplot2</code> to provide eloquent and digestable visuals to showcase <em>exploratory analysis</em> on a single person’s <em>apple watch</em> data.</p>
 <p>Here we load the appropriate into our R environment.</p>
 <pre class="r"><code>library(tidyverse)
 library(lubridate)
@@ -186,11 +186,11 @@ anon_data &lt;- anon_data %&gt;%
   convert_date(endDate) %&gt;% 
   extract_date_data(creationDate)</code></pre>
 <p>The <code>convert_date</code> function converts the columns to datetime. Using pipe operators to do the function calls, this was done by creating the functions utlizing <a href="http://adv-r.had.co.nz/Computing-on-the-language.html">Non Standard Evaluation</a>.</p>
-<p>The <code>extract_date_data</code> function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from <code>lubridate</code>, which include making a week day column and a month column that gets tranformed to an ordered factor column to keep the months in order from Jan-Dec.</p>
+<p>The <code>extract_date_data</code> function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from <code>lubridate</code>, which include making a week day column and a month column appears in logical order (Jan to Dec).</p>
 </div>
 <div id="more-data-cleanage" class="section level2">
 <h2>More Data Cleanage</h2>
-<p>Another transformation I included was finding the difference in minutes between the start date and end date of each measurement. We do this utilizing <code>mutate</code> from <code>dplyr</code>, along with <code>difftime</code> in units of minutes.</p>
+<p>Another transformation I included the difference in minutes between the start date and end date of each measurement. We do this utilizing <code>mutate</code> from <code>dplyr</code>, and the function <code>difftime</code> which will find the difference in units of minutes.</p>
 <pre class="r"><code># Find difference in start and end date in minutes
 anon_data &lt;- anon_data %&gt;%
   mutate(time_diff_mins = as.numeric(
