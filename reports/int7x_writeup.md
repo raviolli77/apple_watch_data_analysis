@@ -1,30 +1,30 @@
 ## Abstract
 
-With the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_170112_a.pdf) ) technologies both data scientist and health professionals have found a crossroads that provides insight into a powerful data processor, the human body. With the quanitiy of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing this vast volume of data to improve the human experience.   
+With the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_170112_a.pdf) ) technology both data scientists and health professionals have found a crossroad that provides insight into a powerful data generator, the human body. With the quantity of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing and understanding the vast amount of data to improve the human experience.   
 
-Many companies have utilized wearable apps to help understand customer's heatlh history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ). Being able to perform better than the baseline model (using low time granularity features). 
+Many companies have utilized wearable apps to help understand customer's heatlh history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ). Being able to perform better than their baseline model (using low time granularity features). 
 
-Researchers in San Franciso have created a semi-supervised model utlizing deep learning that can predict medical conditions with the help of wearable app data from commerical apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilzing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielded better predictive power than baseline models (some include Random Forest and Multi-layer Perceptron). 
+Researchers in San Franciso have created a semi-supervised model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilizing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielded better predictive power than baseline models (classification models not considered deep learning include Random Forest and Multi-layer Perceptron). 
 
 Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science through:
 
 + the quantity of data available.
-+ the ease of access for the mHealth wearable apps
-+ the relationship between the data and other data relevant to the user
++ the ease of access of mHealth data
++ the relationship between the data and other data sources relevant to the user
 
-Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica. (  [source](https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html) ), understanding the importance of wearable app within the context of medical advances can help the health industry. 
+Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica (  [source](https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html) ), that can make users weary of researchers utilizing their data. Understanding the importance of wearable app within the context of medical advances can help the health industry. 
 
-One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonimized and I will be focusing on exploratory analysis on one factor that are measured by the app: active energy burned. Although future iterations I would like to include other measurables gathered by the watch.  
+One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonymized and I will be focusing on exploratory analysis on one factor that are measured by the app: active energy burned. Although future iterations I would like to include other categories gathered by the watch.  
 
 ## Get Data
 
 I received the data from my friend extracting the data from their Apple Watch as an xml file. I then used a python script created by Nicholas J. Radcliffe, which parses through the xml files and creates csv files. Repo can be found [here](https://github.com/tdda/applehealthdata).
 
-After running the script I anonymized the data and input it into two sub-directories called *data/processed* inside my parent directory. 
+After running the script I anonymized the data and input it into the sub-directory called *data/processed* inside the parent directory. 
 
 ## Load Packages
 
-This walkthrough focuses on `tidyverse`, `lubridate` and `ggplot2` to provide eloquent and digestable visuals to showcase *exploratory analysis* on a single person's *apple watch* data. We will be focusing on the active energy burned by this individual for this section of the analysis. 
+This walkthrough focuses on `tidyverse`, `lubridate` and `ggplot2` to provide eloquent and digestable visuals to showcase *exploratory analysis* on a single person's *apple watch* data.  
 
 Here we load the appropriate into our R environment. 
 
