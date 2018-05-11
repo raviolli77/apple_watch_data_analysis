@@ -2,9 +2,9 @@
 
 With the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_170112_a.pdf) ) technology both data scientists and health professionals have found a crossroad that provides insight into a powerful data generator, the human body. With the quantity of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing and understanding the vast amount of data to improve the human experience.   
 
-Many companies have utilized wearable apps to help understand customer's heatlh history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ). Being able to perform better than their baseline model (using low time granularity features). 
+Many companies have utilized wearable apps to help understand customer's health history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ); being able to perform better than their baseline model (using low time granularity features see source for more information). 
 
-Researchers in San Franciso have created a semi-supervised model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilizing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielded better predictive power than baseline models (classification models not considered deep learning include Random Forest and Multi-layer Perceptron). 
+Researchers in San Franciso created a semi-supervised deep learning model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilizing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielding better predictive power than baseline models (classification models not considered deep learning including Random Forest and Multi-layer Perceptron). 
 
 Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science through:
 
@@ -12,9 +12,9 @@ Having a strong interest in the merging of data science and the human experience
 + the ease of access of mHealth data
 + the relationship between the data and other data sources relevant to the user
 
-Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica (  [source](https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html) ), that can make users weary of researchers utilizing their data. Understanding the importance of wearable app within the context of medical advances can help the health industry. 
+Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica (  [source](https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html) ), that can make users weary of researchers utilizing their data. Understanding the importance of wearable app within the context of medical advances can help foster the grow of artificial intelligence in the health industry. 
 
-One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonymized and I will be focusing on exploratory analysis on one factor that are measured by the app: active energy burned. Although future iterations I would like to include other categories gathered by the watch.  
+One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonymized and I will be focusing on exploratory analysis on one factor that was measured by the app: active energy burned. Although future iterations I would like to include other categories gathered by the watch.
 
 ## Get Data
 
@@ -51,14 +51,13 @@ When utilizing functions in the `here` package, we will use the currrent notatio
   here::function_name
 ```
 
-
-We do so because there is conflicts in functions that are called `here` in the `lubridate` and `here` packages. I also created a script called `helper_functions` which has 2 helper functions which create meta data relating to the day of the week and month (called `extract_date_data`), along with data type conversions relating to date columns (called `convert_date`). 
+This is due to conflicts in functions that are called `here` in the `lubridate` and `here` packages. I also created a script called `helper_functions` which has 2 functions that create meta data relating to the day of the week and month (called `extract_date_data`), along with data type conversions relating to date columns (called `convert_date`). 
 
 ## Load Data
 
 We will be loading the data with `tidyr`'s csv file reader, which will load the data into a `tibble`.  
 
-There were a few other columns relating to the meta-data of the apple watch, but they were removed for this analysis 
+There were a few other columns relating to the meta-data of the apple watch, but they were removed for this analysis. 
 
 ```{r}
 # Load Data
@@ -95,11 +94,11 @@ anon_data <- anon_data %>%
 
 The `convert_date` function converts the columns to datetime. Using pipe operators to do the function calls, this was done by creating the functions utlizing [Non Standard Evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html).  
 
-The `extract_date_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, which include making a week day column and a month column that gets tranformed to an ordered factor column to keep the months in order from Jan-Dec. 
+The `extract_date_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, which include making a week day column and a month column appearing in logical order (Jan to Dec). 
 
 ## More Data Cleanage
 
-Another transformation I included was finding the difference in minutes between the start date and end date of each measurement. We do this utilizing `mutate` from `dplyr`, along with `difftime` in units of minutes. 
+Another transformation I included was the difference in minutes between the start date and end date of each measurement. We do this utilizing `mutate` from `dplyr`, and the function `difftime` which will find the difference in units of minutes. 
 
 ```{r}
 # Find difference in start and end date in minutes
@@ -133,6 +132,8 @@ head(anon_data)
 ## # ... with 7 more variables: endDate <dttm>, value <dbl>, tz <chr>,
 ## #   months <ord>, year <dbl>, week_days <ord>, time_diff_mins <dbl>
 ```
+
+This will help showcase the structure of the data frame and is general good practice for other users to become familiar with the data frame. 
 
 ## Dive into data
 
@@ -196,6 +197,7 @@ I decided to only do analysis on 2017 since that's the year with the most comple
 
 Here we will be utlizing the `filter` function to only include data which have the year column (generated from the `creationDate` column) equal to 2017 and call it `anon_data17`. 
 
+
 ```{r}
 anon_data17 <- anon_data %>%
   filter(year == 2017)
@@ -203,7 +205,7 @@ anon_data17 <- anon_data %>%
 
 ## Missing Values 
 
-Although we have data entry for all of 2017, I wanted to explore in more detail how much data (if any) is missing from our data frame as it relates to the creation date of the recordings. I created two vectors; the first includes all entries as dates from our data frame and the second includes all dates from 2017. I then compare these two vectors and see what values are not in our data frame that are in 2017 to know what dates weren't recorded by the apple watch.  
+Although we have data entry for all of 2017 (by months), I wanted to explore in more detail how much data (if any) is missing from our data frame as it relates to the creation date of the recordings. I created two vectors; the first includes all entries as dates from our data frame and the second includes all dates from 2017. I then compare these two vectors and see what values are not in our data frame that are in 2017 to know what dates weren't recorded by the apple watch.  
 
 
 ```{r}
@@ -242,7 +244,7 @@ summary(anon_data17$value)
 ##  0.0010  0.1180  0.2080  0.5017  0.3500 11.2990
 ```
 
-This gives us great insight into some summary statistics, but often visualizing the data can provide more insight. So we visualize the distribution utilizing a histogram. 
+This gives us great insight into some summary statistics, but often visualizing the data can provide insight that can't be deduced from summary statistics. So we visualize the distribution utilizing a histogram. 
 
 ```{r}
 ggplot(anon_data17, 
@@ -598,12 +600,12 @@ anon_data17 %>%
 
 <img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/08_cal_time_series_weekday.png" />
 
-Here we get a better view into the seasonlity across our data. We can notice some trends in the weekdays. As well as a decreasing trend as the year goes on. Telling us that the user's activity decreased as the year moved on, this can be helpful in helping the user understand their work out regiments. We can help motivate the user to keep a stead workflow through the year if we showcase that they are starting to decrease activity later in the year. 
 
+We can notice some seaonality in the weekdays. As well as a decreasing trend as the year goes on. Telling us that the user's activity decreased as the year moved on, this can be helpful in recommendations to the user. We can help motivate the user to keep a steady workflow through the year if we showcase that they are starting to decrease activity later in the year. 
 
 ## Conclusion
 
-I wanted to conlude there in this exploratory analysis. Most of the analysis I did can generalize to any data science project and can help users understand what to look for and ways of extracting more from your data. We saw that data can be extracted from existing columns to allow us to create slices on our data frame. Along with utilizing various visualization techniques to produce useful and insigthful plots. 
+I wanted to conclude this exploratory analysis with this understanding of the user's energy burned for 2017. Most of the analysis I did can generalize to any data science project and can help users understand what to look for and ways of extracting more from your data. We saw that data can be extracted from existing columns to allow us to create slices on our data frame. Along with utilizing various visualization techniques to produce useful and insigthful plots. 
 
 This project is still in its early iterations and I hope to expand the analysis to the various other categories that the Apple Watch collected and see the relationship across these covariates. 
 
