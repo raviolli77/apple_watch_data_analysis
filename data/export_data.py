@@ -184,15 +184,17 @@ def main():
             data = HealthDataExtractor(my_path)
             data.report_stats()
             data.extract()
-        except OSError:
+        except (IOError, OSError) as e:
+            print(e)
             print("Couldn't run script since path is relative to R project. \nChanging path to work for python (If no files were changes).\n")
             new_path = 'raw/export.xml'
             data = HealthDataExtractor(new_path)
             data.report_stats()
             data.extract()
-    except OSError:
+    except  (IOError, OSError) as e:
+        print(e)
         print("Export file not found \nMake sure this file is located in 'data/raw' \nAnd that its called 'export.xml'.")
-        sys.exit()
+        sys.exit(1)
 
 
 if __name__ == '__main__':
