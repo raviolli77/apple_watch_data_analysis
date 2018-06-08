@@ -3,6 +3,10 @@
 + Contributors
 	+ Raul Eulogio
 
++ Revisions and edits made by:
+    + Brittany-Marie Swanson
+    + [Ivana Gomez](https://www.linkedin.com/in/ivana-gomez-71ba04155)
+
 This repository serves as a supplement to the exploratory analysis done in the `RforDataScienceCommunity` youtube channel.
 
 
@@ -29,7 +33,6 @@ After all files successfully downloaded, you should be able to run all scripts. 
 
 
 ## Resources
-
 
 + [Programming with dplyr](https://dplyr.tidyverse.org/articles/programming.html)
 + Foschini Luca et. all - [Observation Time vs. Performance in Digital Phenotyping](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf)

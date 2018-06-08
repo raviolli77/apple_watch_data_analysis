@@ -12,33 +12,34 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Abstract
 
-With the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_170112_a.pdf) ) technology both data scientists and health professionals have found a crossroad that provides insight into a powerful data generator, the human body. With the quantity of data readily available from wearable devices many organizations and researchers have taken steps towards utilizing and understanding the vast amount of data to improve the human experience.   
+Thanks to the popularity of wearable ( [source](http://www.fhs.swiss/pdf/communique_170112_a.pdf) ) technology, data scientists and health professionals have found a mutally beneficial tool for gaining insight into a powerful data generator: the human body. Because data from wearable devices are so readily available, many organizations and researchers have taken steps towards utilizing and understanding them to improve the human experience, such as evaluating a user's health history.    
 
-Many companies have utilized wearable apps to help understand customer's health history more intimately. [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies for predicting a binary anxiety diagnosis utilizing temporal Convolutional Neural Networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ); being able to perform better than their baseline model (using low time granularity features see source for more information). 
+First, a few exmaples: [Evidation Health](https://evidation.com/) has done studies which utilize longitudinal wearable technologies to predict a binary anxiety diagnosis with the help of temporal convolutional neural networks ( [source](https://evidation.com/wp-content/uploads/2017/10/observation-time-vs-performance-in-digital-phenotyping.pdf) ). These networks are able to perform better than baseline model because they use data collected at increasing time granularities, such as steps and sleep in minute-long intervals. 
 
-Researchers in San Franciso created a semi-supervised deep learning model utilizing deep learning that can predict medical conditions with the help of wearable app data from commercial apps like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ).  Utilizing Long short-term Memory (or [LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)) models yielding better predictive power than baseline models (classification models not considered deep learning including Random Forest and Multi-layer Perceptron). 
+Meanwhile, researchers in San Franciso created a semi-supervised deep learning model can predict medical conditions with the help of wearable app data from commercial offerings like FitBit and Apple Watch. ( [source](https://arxiv.org/pdf/1802.02511.pdf) ). By utilizing long short-term memory ([LSTM](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)), models yields better predictive power than baseline models (such as classification models that are not considered deep learning including Random Forest and Multi-layer Perceptron). 
 
-Having a strong interest in the merging of data science and the human experience, wearable apps play an interesting role in the evolution of data science through:
+Wearable apps are playing an interesting role in the evolution of data science for a few reasons including:
 
 + the quantity of data available.
 + the ease of access of mHealth data
-+ the relationship between the data and other data sources relevant to the user
++ the relationship between app data and other data sources relevant to the user
 
-Of course there are many challenges with data collection and privacy as seen with the recent controversial data breach between Facebook and Cambridge Analytica (  [source](https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html) ), that can make users weary of researchers utilizing their data. Understanding the importance of wearable app within the context of medical advances can help foster the grow of artificial intelligence in the health industry. 
+Of course, there are many challenges associated with data collection and privacy that can make users wary of researchers who would utilize their data. Understanding the importance of wearable apps within the context of medical advances, however, can help foster trust and, ultimately, the growth of artificial intelligence in the healthcare industry.  
 
-One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonymized and I will be focusing on exploratory analysis on one factor that was measured by the app: active energy burned. Although future iterations I would like to include other categories gathered by the watch.  
+One of the first challenges is making sense of the vast amount of data available. Thus I aim to do some exploratory analysis utilizing data that was made available from a friend's Apple Watch. The data was anonymized and I will be focusing on exploratory analysis on one factor that was measured by the app: active energy burned (although, in future iterations, I would like to include other categories gathered by the watch).  
 
 ## Get Data
 
-I received the data from my friend extracting the data from their Apple Watch as an xml file. I then used a python script created by Nicholas J. Radcliffe, which parses through the xml files and creates csv files. Repo can be found [here](https://github.com/tdda/applehealthdata).
 
-After running the script I anonymized the data and input it into the sub-directory called *data/processed* inside the parent directory. 
+I extracted the data from my friend's Apple Watch as an XML file. I then used a Python script created by Nicholas J. Radcliffe, which parses XML files and creates CSV files. The repository can be found [here](https://github.com/tdda/applehealthdata).
+
+After running the script, I anonymized the data placed it in the sub-directory called *data/processed*, which is inside the parent directory of the repo I created for this analysis. 
 
 ## Load Packages
 
-This walkthrough focuses on `tidyverse`, `lubridate` and `ggplot2` to provide eloquent and digestable visuals to showcase *exploratory analysis* on a single person's *apple watch* data.  
+This walkthrough focuses on `tidyverse`, `lubridate` and `ggplot2` to provide elegant visuals that showcase our *exploratory analysis* on a single person's Apple Watch data.  
 
-Here we load the appropriate into our R environment. 
+Here we load the appropriate libraries into our R environment. 
 
 ```{r load_packages, message=FALSE}
 library(tidyverse)
@@ -49,26 +50,28 @@ here::here()
 source(here::here("src", "helper_functions.R"))
 ```
 
-When utilizing functions in the `here` package, we will use the currrent notation:
+When utilizing functions in the `here` package, we will use the notation below:
 
 ```{r, eval=FALSE}
   here::function_name
 ```
 
-This is due to conflicts in functions that are called `here` in the `lubridate` and `here` packages. I also created a script called `helper_functions` which has 2 functions that create meta data relating to the day of the week and month (called `extract_date_data`), along with data type conversions relating to date columns (called `convert_date`). 
+This is due to conflicts in functions that are called "here" in the `lubridate` and `here` packages. I also created a script called `helper_functions` which has two functions that create metadata related to the day of the week and month (called `extract_date_data`), along with data type conversions related to date columns (called `convert_date`).
 
 ## Load Data
 
-We will be loading the data with `tidyr`'s csv file reader, which will load the data into a `tibble`.  
-
-There were a few other columns relating to the meta-data of the apple watch, but they were removed for this analysis. 
+We will be loading the data with `tidyr`'s CSV file reader, which will load the data into a `tibble`. There were a few other columns relating to the metadata of the Apple Watch, but they were removed for the purpose of thi analysis. 
 
 ```{r}
 # Load Data
 anon_data <- read_csv(
     here::here("data/processed", "data.csv")
     )
+```
 
+Go ahead and use the helper functions to extract your metadata.
+
+```{r}
 # Use helper functions to extract meta data. 
 anon_data <- anon_data %>%
   convert_date(creationDate) %>%
@@ -78,9 +81,9 @@ anon_data <- anon_data %>%
 
 ```
 
-The `convert_date` function converts the columns to datetime. Using pipe operators to do the function calls, this was done by creating the functions utlizing [Non Standard Evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html).  
+The `convert_date` function converts the columns to datetime. Using pipe operators to do the function calls, this was done by creating the functions utlizing [non-standard evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html).  
 
-The `extract_date_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, which include making a week day column and a month column appearing in logical order (Jan to Dec). 
+The `extract_date_data` function as mentioned earlier creates columns relating to meta data about the dates utilizing functions from `lubridate`, including columns for day of the week and months in chronological order (January to December). 
 
 ## More Data Cleanage
 
@@ -94,7 +97,7 @@ anon_data <- anon_data %>%
   )) 
 ```
 
-I wanted to include this to gain insight as to how regularly were measurements done since I am not too familiar with Apple Watches or their data collection processes. 
+Since I am not too familiar with Apple Watches or their data collection processes, I wanted to include these values to gain some insight into how regularly measurements are taken.
 
 Now let's preview the `tibble`:
 
@@ -102,11 +105,11 @@ Now let's preview the `tibble`:
 head(anon_data)
 ```
 
-This will help showcase the structure of the data frame and is general good practice for other users to become familiar with the data frame. 
+This will help showcase the structure of the data frame and is a general good practice to help other users become familiar with the data frame.
 
 ## Dive into data
 
-Here I will flatten the data across years and months. This is done utilizing the `spread` function where we use year as the key and fill any values that are not present with *None Noted* to showcase the distribution of the data.
+I flattened the data across years and months. This is achieved with the help of the spread function — you can use the year as the key and fill any values that are not present with "None Noted," taking note of the distribution of the data.
 
 
 ```{r, eval=FALSE}
@@ -132,7 +135,7 @@ anon_data %>%
 | November | 10123599 | 10174572 | None Noted | 
 | December | 10030715	| 7738922	 | None Noted | 
 
-As we can see the person's data collection started in November 2016 and is ongoing until March 2018. Next we create a visual representation to drive the point home. 
+As you can see the person's data collection started in November 2016 and is ongoing until March 2018. Next, I created a visual representation to drive the point home. 
 
 ## Visual Representation
 
@@ -157,12 +160,11 @@ anon_data %>%
                  name = "Year")
 ```
 
-I decided to only do analysis on 2017 since that's the year with the most complete data available from my friend's apple watch, and having incomplete data collection for the other years would skew our conclusions. 
-
+I decided to only analyze the data from 2017, since that's the year with the most complete dataset. Looking at incomplete data from other years would just skew our conclusions.
 
 ## Creating tibble for 2017
 
-Here we will be utlizing the `filter` function to only include data which have the year column (generated from the `creationDate` column) equal to 2017 and call it `anon_data17`. 
+Here, we will be utlizing the `filter` function to only include data which have the year column (generated from the `creationDate` column) equal to 2017 and call it `anon_data17`. 
 
 ```{r}
 anon_data17 <- anon_data %>%
@@ -171,7 +173,7 @@ anon_data17 <- anon_data %>%
 
 ## Missing Values 
 
-Although we have data entry for all of 2017 (by months), I wanted to explore in more detail how much data (if any) is missing from our data frame as it relates to the creation date of the recordings. I created two vectors; the first includes all entries as dates from our data frame and the second includes all dates from 2017. I then compare these two vectors and see what values are not in our data frame that are in 2017 to know what dates weren't recorded by the apple watch.  
+Although we have data for all of 2017 (by month), I wanted to explore in more detail how much data (if any) is missing from our data frame as it relates to the creation date of the recordings. I created two vectors; the first includes all entries as dates from our data frame and the second includes all dates from 2017. I then compared these two vectors to see which dates weren't recorded by the Apple Watch.
 
 
 ```{r}
@@ -183,19 +185,17 @@ missing_values <- year17[!year17 %in% year_ad17]
 missing_values
 ```
 
-We can see that the missing entries include the time interval 7/24/2017 to 08/04/2017 (12 days), meaning there is a human component as to why the data is missing. We can conclude that this data is *not missing at random* so we have to be weary of any conclusions we make during this time frame. 
-
-The reasons for this missing time range could be explained by vacation maybe or lost watch perhaps.  
+You can see that the missing entries include the time interval 7/24/2017 to 08/04/2017 (12 days). Most likely, there is a human-related reason why this data is missing; it could perhaps be explained by a vacation or a lost watch. Because the data is *not missing at random*, we have to be wary of any conclusions we make about data in this time frame.
 
 ### Summary Statistics
 
-Now that we have an understanding of missing data we can go ahead and begin to explore the data. I begin by looking at the distribution of the calories burned (called `value` in the data frame) using the `summary` function. 
+Now that we have an understanding of missing data we can go ahead and start exploring. I began by looking at the distribution of the calories burned (called **value*`** in the data frame) using the `summary` function. 
 
 ```{r}
-summary(anon_data17$value)
+summary(anon_data17[["value"]])
 ```
 
-This gives us great insight into some summary statistics, but often visualizing the data can provide insight that can't be deduced from summary statistics. So we visualize the distribution utilizing a histogram. 
+This gives us great insight into some summary statistics. But visualizing data can provide insights that can't be deduced from summary statistics — so let's visualize the distribution utilizing a histogram.
 
 ```{r}
 ggplot(anon_data17, 
@@ -215,7 +215,7 @@ We can see that there is some right skewness and that most of our data falls in 
 
 ## Data Collection by Day
 
-I wanted to briefly look at data collection by day, so I grouped by creation date and counted the units then gave summary statistics. 
+I wanted to briefly look at data collection by day, so I grouped the data by creation date and counted the units and provided summary statistics.
 
 ```{r}
 anon_data17 %>%
@@ -231,10 +231,12 @@ anon_data17 %>%
 #   arrange(desc(n))
  
 ```
-Here we can see the average and median amount of data recordings fall around 700 instances per day. 
+
+Here, we can see the average and median fall around 700 instances per day. 
+
 ## Calendar Heatmap
 
-Inspired by this [blog post](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html), I created a calendar heatmap to showcase the total amount of calories burned across 2017 by weekday. 
+Inspired by this [blog post](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html), I created a calendar heatmap to showcase the total amount of calories burned across 2017 by day of the week.
 
 ```{r}
 anon_data17 %>%
@@ -254,10 +256,9 @@ anon_data17 %>%
 ```
 
 
-
 ## Calories and Time
 
-Next I wanted to shift focus to a column I had created during the data cleaning section, the time difference. Here I wanted to explore the relationship between time range and the amount of calories burned. 
+Next, I wanted to shift my focus to a column I created during the data cleaning process: the time difference. I decided to explore the relationship between time range and the amount of calories burned.
 
 ```{r}
 ggplot(anon_data17, 
@@ -269,7 +270,7 @@ ggplot(anon_data17,
        y = "Calories Burned") 
 ```
 
-Since the data is heavily skewed this visual doesn't give us too much insight so I proceeded to log transform both variables in hopes of understanding their relationship better. 
+Since the data is heavily skewed, this visual doesn't give us too much insight. I proceeded to log transform both variables in hopes of understanding their relationship better.
 
 ```{r}
 ggplot(anon_data17, 
@@ -288,20 +289,18 @@ ggplot(anon_data17,
 Some key takeaways: 
 
 + Data capturing is mostly done in uniform time intervals  
-+ Calories burned show an increase until around the range between [2.5, 3] minutes where the calories burned start to show a decrease
++ Calories burned show an increase until around the range between [2.5, 3] minutes, at which point, the calories burned start to show a decrease
 + Larger time intervals become more sporadic with respect to calories burned
 
 ## Time Frame Analysis
 
-Here I wanted to shift focus to the time intervals, since we found some interesting relationships between time and calories. I begin by using summary on the time difference. 
+Next, I concentrated on the time intervals, since I found some interesting relationships between time and calories. I began by using summary on the time difference.
 
 ```{r}
-summary(anon_data17$time_diff_mins)
+summary(anon_data17[["time_diff_mins"]])
 ```
 
-We can see that the data falls mostly within the 1 minute time frame, while we have a maximum value of an hour. Let's dissect the data more by grouping both by month and weekday seperately to see if there are any trends within dates as it relates to larger values for energy burned. 
-
-#### By Month
+You can see that the data falls mostly within the one-minute time frame and the maximum value is an hour. Let's dissect the data more by grouping both by month and by day of the week to see if there are any trends.
 
 Let's start with grouping by month.  
 
@@ -310,7 +309,8 @@ anon_data17 %>%
  group_by(months) %>%
  summarise(avg_time_spent = mean(time_diff_mins)) 
 ```
-The average for each month still gravitates around 1 minute. Now let's try grouping by weekday and month. This time I created a visual since the output would be too large to read easily.  
+
+The average for each month still gravitates around one minute. Now, let's try grouping by weekday and month. This time, since the output would be too large to read easily, I created a visual.
 
 ```{r}
 anon_data17 %>%
@@ -331,14 +331,13 @@ anon_data17 %>%
                  name = "Weekday")
 ```
 
-Again showcasing that most of our data is collected in 1 minute intervals, and there aren't any months or weekdays that show any irregularities in time intervals for data collection. 
+Again, most of our data is collected in one-minute intervals, and there aren't any months or weekdays that show irregularities in time intervals for data collection.
 
-Understanding the outliers is still difficult to understand without knowing the specs for the apple watch so more research on my part will be done to understand the data capturing process for an apple watch.
+Outliers are difficult to understand without knowing the specs for the Apple Watch. I'd need to do a bit more research  to understand the data capturing process.
  
 ### Diving into the Time Difference Column
 
-Here we go a little more in depth by looking at time frames that are larger than 30 minutes. 
-
+Let's look at time frames that are larger than 30 minutes.
 
 ```{r}
 anon_data17 %>%
@@ -347,12 +346,12 @@ anon_data17 %>%
   arrange(desc(value))
 ```
 
-These values don't present any larger instances of calories burned that are more than 1 which is unusual. There could have been problems with how the watch performs upon reading this [article](https://support.apple.com/en-us/HT207941#heartrate). Some outside factors could have led to poor data collection, however it might be the case that during these large time intervals the user could have not been exhausting too much energy. 
+These values don't present any values larger than one, which is unusual. Upon reading this [article](https://support.apple.com/en-us/HT207941#heartrate), it appears there could have been problems with how the watch performs. However, it might be the case that during these large time intervals, the user simply wasn't that active. 
 
 
 ## Most Data Capture by Hour
 
-Here I wanted to conclude the dissection of the time by looking at what hours have the most data capture. This is done by converting creation date to hour using `lubridate`.
+I wanted to conclude my dissection of time by looking at what hours have the highest instances of data capture. I did this by converting creation date to hour using `lubridate`.
 
 ```{r}
 ggplot(anon_data17, 
@@ -370,12 +369,11 @@ ggplot(anon_data17,
 ```
 
 
-We can see that that data capture follows a fairly regular schedule with a significant decrease starting at hour 8 which could be when this person is starting to go to sleep (peak hour most likely between 11 and 15). 
+You can see that data capture follows a fairly regular schedule, with a significant decrease starting at hour eight. This could be when the user is starting to go to sleep (peak hour most likely between 11 and 15).
 
 # Calories dissected
 
-
-Here I wanted to visualize the total calories burned by day, so I grouped by dates and weekday to create a visual showing a linear view for 2017. 
+I also wanted to visualize total calories burned by day, so I grouped the data by dates and days of the week to create a visual showing a linear view for 2017.
 
 ```{r}
 anon_data17 %>% 
@@ -394,9 +392,11 @@ anon_data17 %>%
                  name = "Weekday") 
 ```
 
-We don't see any obvious trends or seasonality but we can see the time frame that has missing data. Next I went a little deeper by facet wrapping by month. 
+As you can see, there aren't any obvious trends or seasonality, but the time frame that has missing data is easy to spot.
 
 ## Calories burned by weekday and month
+
+Next, I went a little deeper by facet wrapping by month.
 
 ```{r}
 anon_data17 %>% 
@@ -418,13 +418,13 @@ anon_data17 %>%
                  name = "Weekday")
 ```
 
-We can start to see some obvious patterns like days that burn more calories within each respective month, but juxtaposing the months across weekday would give us a better comparison. 
+You can start to see some obvious patterns — like which days of the week the user burns the most calories each month — but juxtaposing the months with days of the week would give us a better comparison.
 
-This leads me to want to look at the data from a time series perspective so the way I'll do this is averaging the values by date then plotting the results. 
+This leads me to my next step: looking at the data from a time-series perspective. The way I did this was by averaging the values by date then plotting the results.
 
 ## Average Energy Burned for 2017
 
-Before I do it by weekday, I want to first visualize as a single value by averaging energy burned by date. We will do so by grouping the data by start date then summarizing the calories burned by averaging. We utilize `geom_smooth` to showcase if there's any trend in our data set.  
+Before I visualize our data by data of the week, I wanted to visualize it as a single value by averaging energy burned by date. I accomplished this by grouping the data by start date then summarizing the calories burned by averaging. I used geom_smooth to see if there's any trend in our data set.
 
 ```{r}
 anon_data17 %>%
@@ -442,11 +442,11 @@ anon_data17 %>%
        title = "Average Energy Burned Time Series") 
 ```
 
-We can see a slow decreasing trend with a spike in average calories on October 21st. There is no obvious trends across each month, so I will create the plot that I mentioned in the previous section.  
+We can see a slow decreasing trend with a spike in average calories on October 21, 2017. There are no obvious trends across each month.
 
 ## Average Calories by Weekday 
 
-Here I will be creating a visual that showcases the average across the year by weekday. This can help us understand any weekly trends that might have not been obvious on the previous plot. 
+Let's create a visual that showcases the average calories burned during the year by day of the week. This can help us understand any weekly trends that might not have been obvious in the previous plot.
 
 ```{r}
 anon_data17 %>%
@@ -468,13 +468,13 @@ anon_data17 %>%
   
 ```
 
-We can notice some seaonality in the weekdays. As well as a decreasing trend as the year goes on. Telling us that the user's activity decreased as the year moved on, this can be helpful in recommendations to the user. We can help motivate the user to keep a steady workflow through the year if we showcase that they are starting to decrease activity later in the year. 
+You might notice some seasonality in the days of the week, as well as a decreasing trend as the year goes on. This tells us that the user's activity decreased over the course of the year, which might be helpful for the user to know. With this information, we can show the user when activity decreased and help motivate them to maintain a steady level of activity. 
 
 ## Conclusion
 
-I wanted to conclude this exploratory analysis with this understanding of the user's energy burned for 2017. Most of the analysis I did can generalize to any data science project and can help users understand what to look for and ways of extracting more from your data. We saw that data can be extracted from existing columns to allow us to create slices on our data frame. Along with utilizing various visualization techniques to produce useful and insigthful plots. 
+I wanted to conclude this exploratory analysis by understanding how the user burned energy throughout 2017. Most of my analysis can be applied to any data science project — hopefully it will help you extract more from your data, even if that data is not from an Apple Watch. You saw that data can be extracted from existing columns to create slices on your data frame and that visualizations provide useful information you otherwise might not glean from a table. 
 
-This project is still in its early iterations and I hope to expand the analysis to the various other categories that the Apple Watch collected and see the relationship across these covariates. 
+This project is still in its early iterations. I hope to expand it to other categories of data that the Apple Watch collects and examine the relationships across these covariates. Stay tuned! 
 
 Next Steps:
 
