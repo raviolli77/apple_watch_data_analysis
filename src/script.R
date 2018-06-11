@@ -4,7 +4,7 @@ library(lubridate)
 library(here)
 
 # Load functions from helper script
-source("global_vars.R")
+source(here::here("src", "helper_functions.R"))
 
 # Load Data
 anon_data <- read_csv(
@@ -13,7 +13,7 @@ anon_data <- read_csv(
 
 
 # Clean Data using predefined function
-anon_data %<>%
+anon_data <- anon_data %>%
   convert_date(creationDate) %>%
   convert_date(startDate) %>%
   convert_date(endDate) %>%
@@ -68,7 +68,7 @@ missing_values <- year17[!year17 %in% year_ad17]
 missing_values
 
 # summary on value column
-summary(anon_data17$value)
+summary(anon_data17[["value"]])
 
 # Histogram of Calories
 ggplot(anon_data17, 
@@ -108,6 +108,7 @@ anon_data17 %>%
   mutate(week_date = ceiling(day(creationDate) / 7)) %>%
   group_by(week_date, months, week_days) %>%
   summarise(total_cal = sum(value)) %>%
+  ungroup() %>%
   ggplot(., 
          aes(week_days, week_date, fill = total_cal)) +
   geom_tile(colour = "white") + 
