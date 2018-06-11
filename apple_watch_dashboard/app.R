@@ -179,7 +179,7 @@ server <- function(input, output) {
     }) 
     output$weekday_table <- renderDataTable({
         my_input = input$category
-        brks = seq(0, 10, 2)
+        brks = seq(0, 5, 1)
         datatable(selectionOptions[[my_input]] %>%
                       calculate_missing_by_week(), 
                   options = list(pageLength = 8)) %>%
