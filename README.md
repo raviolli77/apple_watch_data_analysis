@@ -7,7 +7,11 @@
     + Brittany-Marie Swanson
     + [Ivana Gomez](https://www.linkedin.com/in/ivana-gomez-71ba04155)
 
-This repository serves as a supplement to the exploratory analysis done in the `RforDataScienceCommunity` youtube channel.
+This repository serves as a supplement to the exploratory analysis done in the `RforDataScienceCommunity` youtube channel. 
+
+Shiny dashboard found [here](https://raviolli77.shinyapps.io/apple_watch_dashboard/#). 
+
+For publishing purposes `rds` files must be contained in same directory as the [Shiny Dashboard](https://rstudio.github.io/shinydashboard/). 
 
 
 ## Running Project
