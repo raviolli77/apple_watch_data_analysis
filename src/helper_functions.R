@@ -45,14 +45,36 @@ extract_date_data <- function(data_frame, col_name){
   tryCatch({
       # Extract the months and create a column
       data_frame <- data_frame %>%
-        mutate(months = months(!!col_name)) %>%
+        mutate(months = lubridate::month(!!col_name, label = TRUE)) %>%
         mutate(year = lubridate::year(!!col_name)) %>%
         mutate(week_days = lubridate::wday(!!col_name, label = TRUE))
-      data_frame[["months"]] <- ordered(data_frame[["months"]],
-                                        levels = months_list)
+      
       data_frame
       }, error = function(c){
         message(paste0("Column '", quo_name(col_name), "' not in correct format"))
         stop(c)
       })
   }
+
+
+clean_data <- function(data_file){
+    # Load data
+    data_frame <- read_csv(
+        here::here("data/raw", sprintf("%s.csv", data_file))
+    )
+    
+    # Clean Data using predefined function
+    data_frame <- data_frame %>% 
+        convert_date(creationDate) %>%
+        convert_date(startDate) %>%
+        convert_date(endDate) %>%
+        extract_date_data(creationDate) %>%
+        filter(year == 2017)
+    # Create column to see the difference of time between 
+    # Start date and end date
+    data_frame <- data_frame %>%
+        mutate(time_diff_mins = as.numeric(
+            difftime(endDate, startDate, units = "mins")
+        ))
+    data_frame
+}

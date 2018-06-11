@@ -91,9 +91,25 @@ venv.bak/
 # mypy
 .mypy_cache/
 # R Stuff
+
+# Session Data files
+.RData
+
+# knitr and R markdown default cache directories
+/*_cache/
+/cache/
+
 .Rhistory
 .Rproj.user
 # xml files
 *.xml
 packrat/lib*/
 packrat/src/
+
+# Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
+rsconnect/
+apple_watch_dashboard/rds_files/
+
+# My files
+data/raw/
+src/create_rds.R
