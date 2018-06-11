@@ -9,6 +9,8 @@
 
 This repository serves as a supplement to the exploratory analysis done in the `RforDataScienceCommunity` youtube channel. 
 
+## Shiny Dashboard
+
 Shiny dashboard found [here](https://raviolli77.shinyapps.io/apple_watch_dashboard/#). 
 
 For publishing purposes `rds` files must be contained in same directory as the [Shiny Dashboard](https://rstudio.github.io/shinydashboard/). 
