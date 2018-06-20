@@ -8,25 +8,6 @@ if (!file.exists(here::here("data/processed/rds_files", "year_week_2017.rds"))) 
     year_week_17 <- readRDS(here::here("data/processed/rds_files", "year_week_2017.rds"))
 }
 
-#' Calculate Missing days by Month
-#' 
-#' Function groups data frame by month and captures the missing days 
-#' for each month. Assumes data frame has correct structuring for 
-#' function to work. 
-#' 
-#' @param data_frame respective dataframe which contains column(s).
-#' 
-#' @return Dataframe with months and days missing from said month.
-create_data_frame_metrics <- function(data_frame){
-    data_frame %>%
-        group_by(months) %>%
-        mutate(captured_dates = length(unique(as.Date(creationDate)))) %>%
-        mutate(missing_days = days_in_month(creationDate) - captured_dates) %>%
-        ungroup() %>%
-        count(months, missing_days) %>%
-        select("Month" = months, "Missing Days" = missing_days)
-}
-
 #' Calculate Missing days by Month and weekday
 #' 
 #' Function groups data frame by month and weekday then captures the missing days 
@@ -51,7 +32,8 @@ calculate_missing_by_week <- function(data_frame) {
     spread(key = week_days, 
            value = missing_weekdays,
            fill = 0) %>%
-    select(Month = months, Sun, Mon, Tue, Wed, Thu, Fri, Sat)
+    select(Month = months, Sun, Mon, Tue, Wed, Thu, Fri, Sat) %>%
+    mutate("Total Missing" = rowSums(.[2:8]))
 }
 
 #' Calendar heatmap 
@@ -85,8 +67,8 @@ create_heatmap <- function(data_frame, col_name, value, covariate){
         theme_bw() +
         scale_fill_gradient(name = covariate, 
                             low = "#39a78e", high = "#a73952") + 
-        labs(x = "Week of the Month", 
-             y = "Weekday") + 
+        labs(x = "Weekday", 
+             y = "Week of the Month") + 
         scale_y_continuous(trans = "reverse") + 
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
@@ -104,7 +86,7 @@ create_heatmap <- function(data_frame, col_name, value, covariate){
 #' burned, miles ran/walked).
 #' @param  covariate Name of the previous value to input into the plot legend.  
 #' 
-#' @return calendar heatmap created with \code{ggplot2} 
+#' @return \code{plotly} interactive view of the respective category built with \code{ggplot2} 
 create_time_series <- function(data_frame, col_name, value_name, covariate){
     var_cols <- enquo(col_name)
     data_frame %>%
@@ -127,6 +109,20 @@ create_time_series <- function(data_frame, col_name, value_name, covariate){
              title = sprintf("Average %s over Time for 2017", covariate)) 
 }
 
+#' Generates time series of average value by Weekday
+#' 
+#' Function aggregates data by day and weekday calculates average for each respective bucketing. 
+#' Then utilizing \code{ggplot2} creates a time series plot with interactive piece in \code{plotly}
+#' that allows user to add and remove weekday from plot.   
+#'  
+#' @param data_frame respective dataframe which contains column(s).
+#' @param col_name respective datetime column used to calculate the week 
+#' in the month.
+#' @param value respective column containing the value of category (i.e. calories
+#' burned, miles ran/walked).
+#' @param  covariate Name of the previous value to input into the plot legend.  
+#' 
+#' @return \code{plotly} interactive view of the respective category built with \code{ggplot2} 
 create_time_series_weekly <- function(data_frame, col_name, value_name, covariate){
     var_cols <- enquo(col_name)
     data_frame %>%

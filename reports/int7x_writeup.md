@@ -29,7 +29,7 @@ This walkthrough focuses on `tidyverse`, `lubridate` and `ggplot2` to provide el
 
 Here we load the appropriate libraries into our R environment.
 
-```{r}
+```r
 library(tidyverse)
 library(lubridate)
 library(here)
@@ -42,13 +42,13 @@ source(here::here("src", "helper_functions.R"))
 ### Console Output
 
 
-```{r}
+```r
 ## [1] "/Users/ravi/Desktop/my_projects/apple_health_data"
 ```
 
 When utilizing functions in the `here` package, we will use the currrent notation:
 
-```{r}
+```r
   here::function_name
 ```
 
@@ -59,7 +59,7 @@ This is due to conflicts in functions that are called "here" in the `lubridate` 
 
 We will be loading the data with `tidyr`'s CSV file reader, which will load the data into a `tibble`. There were a few other columns relating to the metadata of the Apple Watch, but they were removed for the purpose of thi analysis.
 
-```{r}
+```r
 # Load Data
 anon_data <- read_csv(
     here::here("data/processed", "data.csv")
@@ -68,7 +68,7 @@ anon_data <- read_csv(
 
 ### Console Output
 
-```{r}
+```r
 ## Parsed with column specification:
 ## cols(
 ##   sourceName = col_character(),
@@ -100,7 +100,7 @@ The `extract_date_data` function as mentioned earlier creates columns relating t
 
 Another transformation I included was the difference in minutes between the start date and end date of each measurement. We do this utilizing `mutate` from `dplyr`, and the function `difftime` which will find the difference in units of minutes.
 
-```{r}
+```r
 # Find difference in start and end date in minutes
 anon_data <- anon_data %>%
   mutate(time_diff_mins = as.numeric(
@@ -112,7 +112,7 @@ Since I am not too familiar with Apple Watches or their data collection processe
 
 Now let's preview the `tibble`:
 
-```{r}
+```r
 head(anon_data)
 ```
 
@@ -139,7 +139,7 @@ This will help showcase the structure of the data frame and is general good prac
 
 I flattened the data across years and months. This is achieved with the help of the spread function — you can use the year as the key and fill any values that are not present with *None Noted*, taking note of the distribution of the data.
 
-```{r}
+```r
 anon_data %>%
   group_by(months, year) %>%
   summarize(total_Cal = sum(value)) %>%
@@ -149,24 +149,24 @@ anon_data %>%
 ```
 | Month | 2016 | 2017 | 2018 |
 |-------|------|------|------|
-| January |	None Noted | 	11516946 |	9777295 | 	
-| February |	None Noted | 	10744737 | 	10750884 | 	
-| March |	None Noted | 	10876301 | 	1072273 | 	
-| April	| None Noted | 	13952086 | None Noted |
-| May |	None Noted |	13806328 |	None Noted |
-| June |	None Noted |	10065583 |	None Noted | 	
-| July |	None Noted | 	5539308 | 	None Noted |
-| August | None Noted |	9337452	| None Noted |
-| September	| None Noted | 7876080	| None Noted | 	
-| October	| None Noted |	11931943 | None Noted |
+| January | None Noted |  11516946 |  9777295 |   
+| February |  None Noted |  10744737 |  10750884 |  
+| March | None Noted |  10876301 |  1072273 |   
+| April | None Noted |  13952086 | None Noted |
+| May | None Noted |  13806328 |  None Noted |
+| June |  None Noted |  10065583 |  None Noted |  
+| July |  None Noted |  5539308 |   None Noted |
+| August | None Noted | 9337452 | None Noted |
+| September | None Noted | 7876080  | None Noted |  
+| October | None Noted |  11931943 | None Noted |
 | November | 10123599 | 10174572 | None Noted |
-| December | 10030715	| 7738922	 | None Noted |
+| December | 10030715 | 7738922  | None Noted |
 
 As you can see the person's data collection started in November 2016 and is ongoing until March 2018. Next, I created a visual representation to drive the point home.
 
 ## Visual Representation
 
-```{r}
+```r
 anon_data %>%
   group_by(months, year) %>%
   summarize(total_Cal = sum(value)) %>%
@@ -187,7 +187,7 @@ anon_data %>%
                  name = "Year")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/00_total_cal_plot.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/00_total_cal_plot.png)
 
 I decided to only analyze the data from 2017, since that's the year with the most complete dataset. Looking at incomplete data from other years would just skew our conclusions.
 
@@ -197,7 +197,7 @@ I decided to only analyze the data from 2017, since that's the year with the mos
 Here, we will be utlizing the `filter` function to only include data which have the year column (generated from the `creationDate` column) equal to 2017 and call it `anon_data17`.
 
 
-```{r}
+```r
 anon_data17 <- anon_data %>%
   filter(year == 2017)
 ```
@@ -207,7 +207,7 @@ anon_data17 <- anon_data %>%
 Although we have data for all of 2017 (by month), I wanted to explore in more detail how much data (if any) is missing from our data frame as it relates to the creation date of the recordings. I created two vectors; the first includes all entries as dates from our data frame and the second includes all dates from 2017. I then compared these two vectors to see which dates weren't recorded by the Apple Watch.
 
 
-```{r}
+```r
 year_ad17 <- unique(as.Date(anon_data17$creationDate))
 year17 <- seq(as.Date("2017-01-01"), as.Date("2017-12-31"), by = "days")
 missing_values <- year17[!year17 %in% year_ad17]
@@ -230,7 +230,7 @@ You can see that the missing entries include the time interval 7/24/2017 to 08/0
 
 Now that we have an understanding of missing data we can go ahead and start exploring. I began by looking at the distribution of the calories burned (called **value*`** in the data frame) using the `summary` function.
 
-```{r}
+```r
 summary(anon_data17[["value"]])
 ```
 
@@ -244,7 +244,7 @@ summary(anon_data17[["value"]])
 This gives us great insight into some summary statistics. But visualizing data can provide insights that can't be deduced from summary statistics — so let's visualize the distribution utilizing a histogram.
 
 
-```{r}
+```r
 ggplot(anon_data17,
          aes(value)) +
   geom_histogram(fill = "#39a78e",
@@ -258,7 +258,7 @@ ggplot(anon_data17,
        title = "Energy Burned by Month")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/01_energy_burned.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/01_energy_burned.png)
 
 We can see that there is some right skewness and that most of our data falls in the range between [0, 1].
 
@@ -267,7 +267,7 @@ We can see that there is some right skewness and that most of our data falls in 
 I wanted to briefly look at data collection by day, so I grouped the data by creation date and counted the units and provided summary statistics.
 
 
-```{r}
+```r
 anon_data17 %>%
   group_by(creation_date = as.Date(creationDate)) %>%
   count(unit) %>%
@@ -301,7 +301,7 @@ Here, we can see the average and median fall around 700 instances per day.
 Inspired by this [blog post](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html), I created a calendar heatmap to showcase the total amount of calories burned across 2017 by day of the week.
 
 
-```{r}
+```r
 anon_data17 %>%
   mutate(week_date = ceiling(day(creationDate) / 7)) %>%
   group_by(week_date, months, week_days) %>%
@@ -318,14 +318,13 @@ anon_data17 %>%
   scale_y_continuous(trans = "reverse")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/02_calendar_heatmap.png" />
-
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/02_calendar_heatmap.png)
 
 ## Calories and Time
 
 Next, I wanted to shift my focus to a column I created during the data cleaning process: the time difference. I decided to explore the relationship between time range and the amount of calories burned.
 
-```{r}
+```r
 ggplot(anon_data17,
        aes(time_diff_mins, value)) +
     geom_point(alpha = 0.10,
@@ -335,12 +334,12 @@ ggplot(anon_data17,
        y = "Calories Burned")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/03_time_cal_compare.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/03_time_cal_compare.png)
 
 Since the data is heavily skewed, this visual doesn't give us too much insight. I proceeded to log transform both variables in hopes of understanding their relationship better.
 
 
-```{r}
+```r
 ggplot(anon_data17,
        aes(time_diff_mins, value)) +
     geom_point(alpha = 0.10,
@@ -353,7 +352,7 @@ ggplot(anon_data17,
 
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/04_time_cal_log.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/04_time_cal_log.png)
 
 Some key takeaways:
 
@@ -366,7 +365,7 @@ Some key takeaways:
 Next, I concentrated on the time intervals, since I found some interesting relationships between time and calories. I began by using summary on the time difference.
 
 
-```{r}
+```r
 summary(anon_data17[["time_diff_mins"]])
 ```
 
@@ -381,7 +380,7 @@ You can see that the data falls mostly within the one-minute time frame and the 
 
 Let's start with grouping by month.  
 
-```{r}
+```r
 anon_data17 %>%
  group_by(months) %>%
  summarise(avg_time_spent = mean(time_diff_mins))
@@ -409,7 +408,7 @@ anon_data17 %>%
 
 The average for each month still gravitates around one minute. Now, let's try grouping by weekday and month. This time, since the output would be too large to read easily, I created a visual.
 
-```{r}
+```r
 anon_data17 %>%
  group_by(week_days, months) %>%
  summarise(avg_time_spent = mean(time_diff_mins)) %>%
@@ -428,7 +427,7 @@ anon_data17 %>%
                  name = "Weekday")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/04_avg_time.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/04_avg_time.png)
 
 Again, most of our data is collected in one-minute intervals, and there aren't any months or weekdays that show irregularities in time intervals for data collection.
 
@@ -438,7 +437,7 @@ Outliers are difficult to understand without knowing the specs for the Apple Wat
 
 Let's look at time frames that are larger than 30 minutes.
 
-```{r}
+```r
 anon_data17 %>%
   filter((time_diff_mins > 30) ) %>%
   select(value, time_diff_mins) %>%
@@ -471,7 +470,7 @@ These values don't present any values larger than one, which is unusual. Upon re
 
 I wanted to conclude my dissection of time by looking at what hours have the highest instances of data capture. I did this by converting creation date to hour using `lubridate`.
 
-```{r}
+```r
 ggplot(anon_data17,
        aes(lubridate::hour(anon_data17$creationDate))) +
     geom_bar(fill = '#39a78e',
@@ -486,7 +485,7 @@ ggplot(anon_data17,
 
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/05_hour_dist.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/05_hour_dist.png)
 
 You can see that data capture follows a fairly regular schedule, with a significant decrease starting at hour eight. This could be when the user is starting to go to sleep (peak hour most likely between 11 and 15).
 
@@ -494,7 +493,7 @@ You can see that data capture follows a fairly regular schedule, with a signific
 
 I also wanted to visualize total calories burned by day, so I grouped the data by dates and days of the week to create a visual showing a linear view for 2017.
 
-```{r}
+```r
 anon_data17 %>%
   group_by(creation_date = as.Date(creationDate),
            week_days) %>%
@@ -510,9 +509,7 @@ anon_data17 %>%
   scale_fill_hue(l = 40,
                  name = "Weekday")
 ```
-
-
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/05_cal_by_day.png">
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/05_cal_by_day.png)
 
 As you can see, there aren't any obvious trends or seasonality, but the time frame that has missing data is easy to spot.
 
@@ -520,7 +517,7 @@ As you can see, there aren't any obvious trends or seasonality, but the time fra
 
 Next, I went a little deeper by facet wrapping by month.
 
-```{r}
+```r
 anon_data17 %>%
   group_by(creation_date = as.Date(creationDate),
            week_days, months) %>%
@@ -540,7 +537,7 @@ anon_data17 %>%
                  name = "Weekday")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/06_cal_by_month.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/06_cal_by_month.png)
 
 You can start to see some obvious patterns — like which days of the week the user burns the most calories each month — but juxtaposing the months with days of the week would give us a better comparison.
 
@@ -550,7 +547,7 @@ This leads me to my next step: looking at the data from a time-series perspectiv
 
 Before I visualize our data by data of the week, I wanted to visualize it as a single value by averaging energy burned by date. I accomplished this by grouping the data by start date then summarizing the calories burned by averaging. I used geom_smooth to see if there's any trend in our data set.
 
-```{r}
+```r
 anon_data17 %>%
   group_by(creation_date = as.Date(creationDate)) %>%
   summarise(total_Cal = mean(value)) %>%
@@ -566,7 +563,7 @@ anon_data17 %>%
        title = "Average Energy Burned Time Series")
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/07_cal_time_series.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/07_cal_time_series.png)
 
 We can see a slow decreasing trend with a spike in average calories on October 21, 2017. There are no obvious trends across each month.
 
@@ -574,7 +571,7 @@ We can see a slow decreasing trend with a spike in average calories on October 2
 
 Let's create a visual that showcases the average calories burned during the year by day of the week. This can help us understand any weekly trends that might not have been obvious in the previous plot.
 
-```{r}
+```r
 anon_data17 %>%
   group_by(week_days, year, months) %>%
   summarise(total_Cal = mean(value)) %>%
@@ -594,7 +591,7 @@ anon_data17 %>%
 
 ```
 
-<img src="https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/08_cal_time_series_weekday.png" />
+![](https://raw.githubusercontent.com/raviolli77/apple_watch_data_analysis/master/reports/figures/08_cal_time_series_weekday.png)
 
 You might notice some seasonality in the days of the week, as well as a decreasing trend as the year goes on. This tells us that the user's activity decreased over the course of the year, which might be helpful for the user to know. With this information, we can show the user when activity decreased and help motivate them to maintain a steady level of activity.
 
